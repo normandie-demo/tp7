@@ -13,7 +13,7 @@ sudo systemctl stop nginx
 
 Editer le fichier *nginx.yaml*
 
-```
+```yaml
   - name: Count nginx process
     ansible.builtin.shell: ps -ef | grep {{ main_service }} | grep -v grep | wc -l
     register: result
