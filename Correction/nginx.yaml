@@ -1,0 +1,30 @@
+---
+- hosts: front
+  become: true
+  become_user: root
+  become_method: sudo
+  
+  tasks:
+  
+  - name: Install NGINX
+    ansible.builtin.dnf:
+      name: nginx
+
+  - name: Start Service
+    ansible.builtin.systemd:
+      name: "{{ main_service }}"
+      state: started
+
+  - name: Count nginx process
+    ansible.builtin.shell: ps -ef | grep {{ main_service }} | grep -v grep | wc -l
+    register: result
+
+  - name: Display count
+    ansible.builtin.debug:
+      msg: "There is {{ result.stdout }} nginx process up"
+
+  - name: Start Service
+    ansible.builtin.systemd:
+      name: "{{ main_service }}"
+      state: started
+    when: result.stdout == "0"
